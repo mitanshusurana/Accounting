@@ -12,13 +12,15 @@ export default function GstReturnsScreen() {
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/tax/gstr1/generate`, {
-        method: 'POST',
+      const today = new Date().toISOString().split('T')[0];
+      const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+
+      const response = await fetch(`${API_URL}/tax/gstr1/generate?startDate=${firstDay}&endDate=${today}`, {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${userToken}`,
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify([]) // In a real scenario, pass actual invoice data
+        }
       });
 
       if (response.ok) {

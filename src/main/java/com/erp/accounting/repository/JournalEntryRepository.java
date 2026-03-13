@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface JournalEntryRepository extends JpaRepository<JournalEntry, String> {
     List<JournalEntry> findByTransactionDateBetween(LocalDate startDate, LocalDate endDate);
+    List<JournalEntry> findByVoucherTypeAndTransactionDateBetween(String voucherType, LocalDate startDate, LocalDate endDate);
 }
