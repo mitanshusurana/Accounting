@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Platform } from 'react-native';
 
 const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
 
 export default function ProfitLossScreen() {
+  const { userToken } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [netProfit, setNetProfit] = useState(0);
@@ -15,7 +17,7 @@ export default function ProfitLossScreen() {
   const fetchProfitLoss = async () => {
     try {
       const today = new Date().toISOString().split('T')[0];
-      const response = await fetch(`${API_URL}/reports/trial-balance?asOfDate=${today}`);
+      const response = await fetch(`${API_URL}/reports/trial-balance?asOfDate=${today}`, { headers: { 'Authorization': `Bearer ${userToken}` } });
       const json = await response.json();
 
       const plData = json.filter(item =>

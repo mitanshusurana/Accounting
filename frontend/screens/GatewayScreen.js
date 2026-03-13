@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { AuthContext } from '../context/AuthContext';
+import { useContext } from 'react';
+
 export default function GatewayScreen({ navigation }) {
+  const { logout } = useContext(AuthContext);
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Gateway of ERP</Text>
@@ -11,12 +15,21 @@ export default function GatewayScreen({ navigation }) {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AccountForm')}>
           <Text style={styles.buttonText}>Account Info (Ledger Creation)</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Product')}>
+          <Text style={styles.buttonText}>Inventory Info (Stock Items)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Godown')}>
+          <Text style={styles.buttonText}>Godown (Warehouse) Creation</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Transactions</Text>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('JournalEntry')}>
           <Text style={styles.buttonText}>Accounting Vouchers</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('StockMovement')}>
+          <Text style={styles.buttonText}>Inventory Vouchers</Text>
         </TouchableOpacity>
       </View>
 
@@ -33,6 +46,12 @@ export default function GatewayScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Daybook')}>
           <Text style={styles.buttonText}>Day Book</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.section}>
+        <TouchableOpacity style={styles.button} onPress={logout}>
+          <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>
     </View>

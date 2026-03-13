@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Platform } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
 
 const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
 
 export default function AccountFormScreen() {
+  const { userToken } = useContext(AuthContext);
   const [accountId, setAccountId] = useState('');
   const [name, setName] = useState('');
   const [accountType, setAccountType] = useState('ASSET');
@@ -20,7 +22,10 @@ export default function AccountFormScreen() {
 
       const response = await fetch(`${API_URL}/accounts`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        },
         body: JSON.stringify(payload),
       });
 

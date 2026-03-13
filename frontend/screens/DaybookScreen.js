@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Platform } from 'react-native';
 
 const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
 
 export default function DaybookScreen() {
+  const { userToken } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +18,7 @@ export default function DaybookScreen() {
       const today = new Date().toISOString().split('T')[0];
       const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
 
-      const response = await fetch(`${API_URL}/reports/daybook?startDate=${firstDay}&endDate=${today}`);
+      const response = await fetch(`${API_URL}/reports/daybook?startDate=${firstDay}&endDate=${today}`, { headers: { 'Authorization': `Bearer ${userToken}` } });
       const json = await response.json();
       setData(json);
     } catch (error) {

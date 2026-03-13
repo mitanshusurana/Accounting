@@ -16,9 +16,9 @@ public class FifoValuationService {
         this.stockMovementRepository = stockMovementRepository;
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public BigDecimal calculateCogs(String productId, BigDecimal quantitySold) {
-        List<StockMovement> inMovements = stockMovementRepository.findByProductIdAndDirectionOrderByMovementDateAsc(
-                productId, StockMovement.MovementDirection.IN);
+        List<StockMovement> inMovements = stockMovementRepository.findAvailableInMovements(productId);
 
         BigDecimal remainingQuantityToSell = quantitySold;
         BigDecimal totalCogs = BigDecimal.ZERO;
@@ -28,17 +28,19 @@ public class FifoValuationService {
                 break;
             }
 
-            // We need a way to track the remaining quantity of an IN movement.
-            // For the sake of simplicity in this calculation, we assume
-            // a naive calculation that does not persist the "used" amount
-            // on the IN movement itself, which would be needed in a real system.
-            // Assuming full quantity is available for this simple FIFO implementation.
-            BigDecimal availableQuantity = inMovement.getQuantity();
+            BigDecimal availableQuantity = inMovement.getAvailableQuantity();
+            if (availableQuantity == null) {
+                availableQuantity = inMovement.getQuantity();
+            }
 
             BigDecimal quantityToUse = availableQuantity.min(remainingQuantityToSell);
 
             BigDecimal costForThisBatch = quantityToUse.multiply(inMovement.getUnitCost());
             totalCogs = totalCogs.add(costForThisBatch);
+
+            // Persist the consumed stock amount back to the DB to ensure accurate FIFO for subsequent sales
+            inMovement.setAvailableQuantity(availableQuantity.subtract(quantityToUse));
+            stockMovementRepository.save(inMovement);
 
             remainingQuantityToSell = remainingQuantityToSell.subtract(quantityToUse);
         }

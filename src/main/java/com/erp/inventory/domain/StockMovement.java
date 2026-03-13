@@ -20,6 +20,8 @@ public class StockMovement {
 
     private BigDecimal quantity;
 
+    private BigDecimal availableQuantity; // Add this to track FIFO consumption
+
     @Enumerated(EnumType.STRING)
     private MovementDirection direction;
 
@@ -38,6 +40,7 @@ public class StockMovement {
         this.godownId = godownId;
         this.batchId = batchId;
         this.quantity = quantity;
+        this.availableQuantity = direction == MovementDirection.IN ? quantity : BigDecimal.ZERO;
         this.direction = direction;
         this.unitCost = unitCost;
         this.movementDate = movementDate;
@@ -81,6 +84,14 @@ public class StockMovement {
 
     public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
+    }
+
+    public BigDecimal getAvailableQuantity() {
+        return availableQuantity;
+    }
+
+    public void setAvailableQuantity(BigDecimal availableQuantity) {
+        this.availableQuantity = availableQuantity;
     }
 
     public MovementDirection getDirection() {

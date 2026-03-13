@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert } from 'react-native';
-
-import { Platform } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
 
 const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
 
 export default function JournalEntryForm() {
+  const { userToken } = useContext(AuthContext);
   const [transactionDate, setTransactionDate] = useState('');
   const [voucherType, setVoucherType] = useState('Journal');
   const [narration, setNarration] = useState('');
@@ -51,6 +51,7 @@ export default function JournalEntryForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
         },
         body: JSON.stringify(payload),
       });
