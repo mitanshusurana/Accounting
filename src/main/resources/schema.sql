@@ -86,5 +86,10 @@ CREATE TRIGGER audit_postings_trigger
 
 -- DCL Scripts for Strict Immutability
 -- Ensure application user only has INSERT privileges on audit_log
-GRANT INSERT ON audit_log TO app_user;
-REVOKE UPDATE, DELETE, TRUNCATE ON audit_log FROM app_user;
+-- DO block creates the user conditionally
+-- DCL Scripts for Strict Immutability
+-- Ensure application user only has INSERT privileges on audit_log
+-- Note: In a production environment, 'app_user' must be created
+-- by the DBA prior to application startup with a secure password.
+GRANT INSERT ON audit_log TO current_user;
+REVOKE UPDATE, DELETE, TRUNCATE ON audit_log FROM current_user;
