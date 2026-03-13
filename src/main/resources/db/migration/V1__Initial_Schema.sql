@@ -41,6 +41,43 @@ CREATE TABLE IF NOT EXISTS posting_bill_allocations (
     type VARCHAR(50)
 );
 
+-- Products Table
+CREATE TABLE IF NOT EXISTS products (
+    product_id VARCHAR(255) PRIMARY KEY,
+    sku VARCHAR(255),
+    name VARCHAR(255),
+    hsn_code VARCHAR(255),
+    default_price DECIMAL(19, 4)
+);
+
+-- Godowns Table
+CREATE TABLE IF NOT EXISTS godowns (
+    godown_id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255),
+    location VARCHAR(255)
+);
+
+-- Stock Movements Table
+CREATE TABLE IF NOT EXISTS stock_movements (
+    movement_id VARCHAR(255) PRIMARY KEY,
+    product_id VARCHAR(255),
+    godown_id VARCHAR(255),
+    batch_id VARCHAR(255),
+    quantity DECIMAL(19, 4),
+    available_quantity DECIMAL(19, 4),
+    direction VARCHAR(50),
+    unit_cost DECIMAL(19, 4),
+    movement_date DATE
+);
+
+-- Users Table
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL
+);
+
 -- Audit Log Table for MCA mandate
 CREATE TABLE IF NOT EXISTS audit_log (
     record_id SERIAL PRIMARY KEY,
@@ -84,9 +121,6 @@ CREATE TRIGGER audit_postings_trigger
     AFTER INSERT OR UPDATE OR DELETE ON postings
     FOR EACH ROW EXECUTE FUNCTION audit_trigger_function();
 
--- DCL Scripts for Strict Immutability
--- Ensure application user only has INSERT privileges on audit_log
--- DO block creates the user conditionally
 -- DCL Scripts for Strict Immutability
 -- Ensure application user only has INSERT privileges on audit_log
 -- Note: In a production environment, 'app_user' must be created
