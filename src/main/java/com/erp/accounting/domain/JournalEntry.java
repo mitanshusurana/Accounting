@@ -20,6 +20,7 @@ public class JournalEntry {
     private String narration;
 
     @OneToMany(mappedBy = "journalEntry", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonManagedReference
     private List<Posting> postings = new ArrayList<>();
 
     public JournalEntry() {}

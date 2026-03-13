@@ -29,6 +29,7 @@ public class Posting {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "entry_id")
+    @com.fasterxml.jackson.annotation.JsonBackReference
     private JournalEntry journalEntry;
 
     public Posting() {}
