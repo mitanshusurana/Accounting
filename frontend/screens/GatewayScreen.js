@@ -31,6 +31,16 @@ export default function GatewayScreen({ navigation }) {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('StockMovement')}>
           <Text style={styles.buttonText}>Inventory Vouchers</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Invoice')}>
+          <Text style={styles.buttonText}>Sales / Purchase Invoice</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Banking</Text>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BankReconciliation')}>
+          <Text style={styles.buttonText}>Bank Reconciliation</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
@@ -46,6 +56,9 @@ export default function GatewayScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Daybook')}>
           <Text style={styles.buttonText}>Day Book</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GstReturns')}>
+          <Text style={styles.buttonText}>GST Returns (Offline JSON)</Text>
         </TouchableOpacity>
       </View>
 

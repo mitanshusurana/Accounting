@@ -9,8 +9,9 @@ import technology.tabula.Table;
 import technology.tabula.extractors.BasicExtractionAlgorithm;
 import technology.tabula.extractors.SpreadsheetExtractionAlgorithm;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,10 +23,11 @@ import java.util.List;
 @Service
 public class BankStatementParserService {
 
-    public List<ParsedTransaction> parseStatement(File pdfFile) throws IOException {
+    public List<ParsedTransaction> parseStatement(MultipartFile multipartFile) throws IOException {
         List<ParsedTransaction> transactions = new ArrayList<>();
 
-        try (PDDocument document = PDDocument.load(pdfFile)) {
+        try (InputStream is = multipartFile.getInputStream();
+             PDDocument document = PDDocument.load(is)) {
             ObjectExtractor extractor = new ObjectExtractor(document);
             SpreadsheetExtractionAlgorithm sea = new SpreadsheetExtractionAlgorithm();
             BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();

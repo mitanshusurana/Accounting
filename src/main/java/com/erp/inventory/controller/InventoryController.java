@@ -9,6 +9,7 @@ import com.erp.inventory.repository.StockMovementRepository;
 import com.erp.inventory.service.FifoValuationService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -67,5 +68,34 @@ public class InventoryController {
         response.put("quantitySold", quantity);
         response.put("calculatedCogs", cogs);
         return response;
+    }
+
+    @PostMapping("/invoice")
+    @Transactional
+    public ResponseEntity<?> createInvoice(@RequestBody Map<String, Object> invoicePayload) {
+        // Simplified combined save logic for PoC.
+        // In a real system, this handles the JournalEntry and loops through StockMovements.
+        // It validates Debits = Credits (Sales Account + Tax vs Debtors)
+
+        try {
+            List<Map<String, Object>> items = (List<Map<String, Object>>) invoicePayload.get("items");
+            String invoiceType = (String) invoicePayload.get("invoiceType");
+            String direction = invoiceType.equalsIgnoreCase("Sales") ? "OUT" : "IN";
+
+            for (Map<String, Object> item : items) {
+                StockMovement movement = new StockMovement();
+                movement.setProductId((String) item.get("productId"));
+                movement.setGodownId((String) item.get("godownId"));
+                movement.setQuantity(new BigDecimal(item.get("quantity").toString()));
+                movement.setDirection(StockMovement.MovementDirection.valueOf(direction));
+                movement.setUnitCost(new BigDecimal(item.get("rate").toString()));
+                movement.setAvailableQuantity(direction.equals("IN") ? movement.getQuantity() : BigDecimal.ZERO);
+                stockMovementRepository.save(movement);
+            }
+
+            return ResponseEntity.ok(Map.of("status", "success", "message", "Invoice and Stock saved."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
