@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet, Alert, Platform, FlatList, ActivityIndi
 import * as DocumentPicker from 'expo-document-picker';
 import { AuthContext } from '../context/AuthContext';
 
-const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || (Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api');
 
 export default function BankReconciliationScreen() {
   const { userToken } = useContext(AuthContext);
