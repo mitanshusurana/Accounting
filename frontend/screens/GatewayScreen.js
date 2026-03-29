@@ -21,6 +21,9 @@ export default function GatewayScreen({ navigation }) {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Godown')}>
           <Text style={styles.buttonText}>Godown (Warehouse) Creation</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Party')}>
+          <Text style={styles.buttonText}>Party (Customer/Supplier) Master</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
@@ -59,6 +62,9 @@ export default function GatewayScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GstReturns')}>
           <Text style={styles.buttonText}>GST Returns (Offline JSON)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Migration')}>
+          <Text style={styles.buttonText}>Data Migration</Text>
         </TouchableOpacity>
       </View>
 

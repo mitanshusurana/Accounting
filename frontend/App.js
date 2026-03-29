@@ -16,6 +16,8 @@ import StockMovementScreen from './screens/StockMovementScreen';
 import InvoiceScreen from './screens/InvoiceScreen';
 import BankReconciliationScreen from './screens/BankReconciliationScreen';
 import GstReturnsScreen from './screens/GstReturnsScreen';
+import PartyScreen from './screens/PartyScreen';
+import MigrationScreen from './screens/MigrationScreen';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 
 const Stack = createNativeStackNavigator();
@@ -46,6 +48,8 @@ function Navigation() {
             <Stack.Screen name="Invoice" component={InvoiceScreen} options={{ title: 'Invoice' }} />
             <Stack.Screen name="BankReconciliation" component={BankReconciliationScreen} options={{ title: 'Bank Reconciliation' }} />
             <Stack.Screen name="GstReturns" component={GstReturnsScreen} options={{ title: 'GST Returns' }} />
+            <Stack.Screen name="Party" component={PartyScreen} options={{ title: 'Customer/Supplier Master' }} />
+            <Stack.Screen name="Migration" component={MigrationScreen} options={{ title: 'Data Migration' }} />
           </>
         )}
       </Stack.Navigator>
