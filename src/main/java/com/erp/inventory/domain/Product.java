@@ -17,6 +17,11 @@ public class Product {
     private String hsnCode;
     private BigDecimal defaultPrice;
 
+    private String barcode;
+    private String shortCode;
+    private BigDecimal taxRate;
+    private String uomId;
+
     public Product() {}
 
     public String getProductId() { return productId; }
@@ -29,4 +34,13 @@ public class Product {
     public void setHsnCode(String hsnCode) { this.hsnCode = hsnCode; }
     public BigDecimal getDefaultPrice() { return defaultPrice; }
     public void setDefaultPrice(BigDecimal defaultPrice) { this.defaultPrice = defaultPrice; }
+
+    public String getBarcode() { return barcode; }
+    public void setBarcode(String barcode) { this.barcode = barcode; }
+    public String getShortCode() { return shortCode; }
+    public void setShortCode(String shortCode) { this.shortCode = shortCode; }
+    public BigDecimal getTaxRate() { return taxRate; }
+    public void setTaxRate(BigDecimal taxRate) { this.taxRate = taxRate; }
+    public String getUomId() { return uomId; }
+    public void setUomId(String uomId) { this.uomId = uomId; }
 }

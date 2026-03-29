@@ -83,4 +83,94 @@ public class ReportService {
     public List<JournalEntry> getDaybook(LocalDate startDate, LocalDate endDate) {
         return journalEntryRepository.findByTransactionDateBetween(startDate, endDate);
     }
+
+    public Map<String, Object> getProfitAndLoss(LocalDate startDate, LocalDate endDate) {
+        // Simplified P&L based on Trial Balance up to endDate (ignoring startDate for simplicity in this example)
+        List<Map<String, Object>> tb = getTrialBalance(endDate);
+
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+        BigDecimal totalExpenses = BigDecimal.ZERO;
+        List<Map<String, Object>> revenues = new ArrayList<>();
+        List<Map<String, Object>> expenses = new ArrayList<>();
+
+        for (Map<String, Object> row : tb) {
+            String type = (String) row.get("accountType");
+            BigDecimal debit = (BigDecimal) row.get("debitBalance");
+            BigDecimal credit = (BigDecimal) row.get("creditBalance");
+
+            if ("REVENUE".equals(type)) {
+                // Revenues usually have credit balances
+                BigDecimal balance = credit.subtract(debit);
+                totalRevenue = totalRevenue.add(balance);
+                row.put("balance", balance);
+                revenues.add(row);
+            } else if ("EXPENSE".equals(type)) {
+                // Expenses usually have debit balances
+                BigDecimal balance = debit.subtract(credit);
+                totalExpenses = totalExpenses.add(balance);
+                row.put("balance", balance);
+                expenses.add(row);
+            }
+        }
+
+        Map<String, Object> pnl = new HashMap<>();
+        pnl.put("revenues", revenues);
+        pnl.put("totalRevenue", totalRevenue);
+        pnl.put("expenses", expenses);
+        pnl.put("totalExpenses", totalExpenses);
+        pnl.put("netProfit", totalRevenue.subtract(totalExpenses));
+
+        return pnl;
+    }
+
+    public Map<String, Object> getBalanceSheet(LocalDate asOfDate) {
+        List<Map<String, Object>> tb = getTrialBalance(asOfDate);
+
+        BigDecimal totalAssets = BigDecimal.ZERO;
+        BigDecimal totalLiabilities = BigDecimal.ZERO;
+        BigDecimal totalEquity = BigDecimal.ZERO;
+
+        List<Map<String, Object>> assets = new ArrayList<>();
+        List<Map<String, Object>> liabilities = new ArrayList<>();
+        List<Map<String, Object>> equity = new ArrayList<>();
+
+        for (Map<String, Object> row : tb) {
+            String type = (String) row.get("accountType");
+            BigDecimal debit = (BigDecimal) row.get("debitBalance");
+            BigDecimal credit = (BigDecimal) row.get("creditBalance");
+
+            if ("ASSET".equals(type)) {
+                BigDecimal balance = debit.subtract(credit);
+                totalAssets = totalAssets.add(balance);
+                row.put("balance", balance);
+                assets.add(row);
+            } else if ("LIABILITY".equals(type)) {
+                BigDecimal balance = credit.subtract(debit);
+                totalLiabilities = totalLiabilities.add(balance);
+                row.put("balance", balance);
+                liabilities.add(row);
+            } else if ("EQUITY".equals(type)) {
+                BigDecimal balance = credit.subtract(debit);
+                totalEquity = totalEquity.add(balance);
+                row.put("balance", balance);
+                equity.add(row);
+            }
+        }
+
+        // Add Current Year Profit to Equity
+        Map<String, Object> pnl = getProfitAndLoss(LocalDate.of(asOfDate.getYear(), 1, 1), asOfDate); // simplified start date
+        BigDecimal netProfit = (BigDecimal) pnl.get("netProfit");
+        totalEquity = totalEquity.add(netProfit);
+
+        Map<String, Object> bs = new HashMap<>();
+        bs.put("assets", assets);
+        bs.put("totalAssets", totalAssets);
+        bs.put("liabilities", liabilities);
+        bs.put("totalLiabilities", totalLiabilities);
+        bs.put("equity", equity);
+        bs.put("currentYearProfit", netProfit);
+        bs.put("totalEquityAndLiabilities", totalLiabilities.add(totalEquity));
+
+        return bs;
+    }
 }

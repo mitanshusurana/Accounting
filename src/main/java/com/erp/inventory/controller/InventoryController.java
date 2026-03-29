@@ -47,8 +47,16 @@ public class InventoryController {
         return productRepository.findAll();
     }
 
+    @GetMapping("/products/search")
+    public List<Product> searchProducts(@RequestParam String query) {
+        return productRepository.searchByBarcodeOrShortCodeOrDescription(query);
+    }
+
     @PostMapping("/products")
     public Product createProduct(@RequestBody Product product) {
+        if(product.getProductId() == null || product.getProductId().isEmpty()) {
+            product.setProductId(UUID.randomUUID().toString());
+        }
         return productRepository.save(product);
     }
 
